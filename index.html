@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Weekly Meal Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Teal -->
+    <!-- Application Structure Plan: The application uses a task-oriented dashboard layout. The primary user task is viewing the meal plan for a specific day. I chose a prominent day-selector navigation (tabs/buttons) that dynamically updates a central content area. This is more intuitive and faster than scrolling a long document. Key information like general guidelines and a nutritional overview are placed in persistent, dedicated sections above and below the daily plan for constant context. This structure enhances usability by prioritizing the most frequent user action while keeping essential supporting information readily accessible. -->
+    <!-- Visualization & Content Choices: Report Info: Overall diet composition -> Goal: Inform about nutritional balance -> Viz/Presentation Method: Donut Chart -> Interaction: Hover to see details -> Justification: A donut chart visually communicates the variety and proportion of food groups (lentils, vegetables, etc.) more effectively than the source's text list, reinforcing the "nutrient-rich" claim and making the plan feel more balanced and data-driven. Library/Method: Chart.js/Canvas. Report Info: Daily meal schedule -> Goal: Organize & Inform -> Viz/Presentation Method: Interactive Cards -> Interaction: Click day tabs to switch content -> Justification: Cards for each meal (Breakfast, Lunch, Dinner) with icons and notes create a clear, scannable structure. Highlighting leftovers with an icon directly addresses a key constraint from the report. Method: HTML/CSS/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 640px) {
+            .chart-container {
+                height: 380px;
+            }
+        }
+        .day-btn {
+            transition: all 0.3s ease;
+        }
+        .day-btn.active {
+            background-color: #0d9488;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="bg-amber-50 text-stone-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-5xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-teal-800">Your Interactive Weekly Meal Plan</h1>
+            <p class="text-stone-600 mt-2">A personalized, easy-cook diet for one, focusing on South Indian flavors.</p>
+        </header>
+
+        <section id="guidelines" class="mb-8 p-6 bg-white rounded-xl shadow-sm">
+            <h2 class="text-2xl font-semibold text-teal-700 mb-4">General Guidelines</h2>
+            <p class="text-stone-600 mb-6">This section outlines the basic principles to follow throughout the week for a balanced diet. Adhering to these simple habits will help you get the most out of this meal plan.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-stone-700">
+                <div class="flex items-center space-x-3 p-3 bg-amber-100/50 rounded-lg">
+                    <span class="text-2xl">🥛</span>
+                    <span>Aim for 1 glass of milk daily.</span>
+                </div>
+                <div class="flex items-center space-x-3 p-3 bg-amber-100/50 rounded-lg">
+                    <span class="text-2xl">💧</span>
+                    <span>Drink plenty of water throughout the day.</span>
+                </div>
+                <div class="flex items-center space-x-3 p-3 bg-amber-100/50 rounded-lg">
+                    <span class="text-2xl">🍎</span>
+                    <span>Include 1-2 seasonal fruits daily.</span>
+                </div>
+                <div class="flex items-center space-x-3 p-3 bg-amber-100/50 rounded-lg">
+                    <span class="text-2xl">🌰</span>
+                    <span>Snack on a handful of nuts if hungry.</span>
+                </div>
+                <div class="flex items-center space-x-3 p-3 bg-amber-100/50 rounded-lg">
+                    <span class="text-2xl">🍳</span>
+                    <span>Ensure duck eggs are thoroughly cooked.</span>
+                </div>
+                <div class="flex items-center space-x-3 p-3 bg-amber-100/50 rounded-lg">
+                    <span class="text-2xl">🌶️</span>
+                    <span>Adjust spice levels to your preference.</span>
+                </div>
+            </div>
+        </section>
+
+        <main>
+            <div id="day-selector" class="flex flex-wrap justify-center gap-2 mb-8">
+            </div>
+
+            <section id="meal-display" class="bg-white p-6 rounded-xl shadow-lg min-h-[400px]">
+                <h2 id="day-title" class="text-2xl font-bold text-center text-teal-700 mb-6"></h2>
+                <div id="meal-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                </div>
+            </section>
+        </main>
+
+        <section id="nutrition" class="mt-10 pt-8 pb-4 bg-white rounded-xl shadow-sm">
+            <h2 class="text-2xl font-semibold text-teal-700 mb-2 text-center">Nutritional Snapshot</h2>
+             <p class="text-stone-600 text-center max-w-2xl mx-auto mb-6">This chart provides a visual representation of the main food groups in your weekly plan, helping you understand the sources of your nutrition. Hover over any segment of the chart to see the specific food group it represents.</p>
+            <div class="chart-container">
+                <canvas id="nutrition-chart"></canvas>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mealPlanData = {
+                1: {
+                    title: "Day 1: Lentil & Vegetable Focus",
+                    meals: [
+                        { time: "Breakfast", name: "Vegetable Upma", note: "Reheated from last night.", icon: "☀️" },
+                        { time: "Lunch", name: "Sambar & Carrot Poriyal", note: "With leftover steamed rice.", icon: "🍚" },
+                        { time: "Dinner", name: "Dal Tadka & Bhindi Fry", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ]
+                },
+                2: {
+                    title: "Day 2: North Indian Touch",
+                    meals: [
+                        { time: "Breakfast", name: "Dal Tadka & Bhindi Fry", note: "Reheated leftovers.", icon: "☀️", leftover: true },
+                        { time: "Lunch", name: "Lemon Rice & Boiled Duck Egg", note: "Made with leftover rice.", icon: "🍚" },
+                        { time: "Dinner", name: "Chana Masala", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ]
+                },
+                3: {
+                    title: "Day 3: Kootu & Rasam Comfort",
+                    meals: [
+                        { time: "Breakfast", name: "Chana Masala", note: "Reheated leftovers.", icon: "☀️", leftover: true },
+                        { time: "Lunch", name: "Rasam & Cabbage Poriyal", note: "With leftover steamed rice.", icon: "🍚" },
+                        { time: "Dinner", name: "Vegetable Kootu", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ]
+                },
+                4: {
+                    title: "Day 4: Paneer & Curd Rice",
+                    meals: [
+                        { time: "Breakfast", name: "Vegetable Kootu", note: "Reheated leftovers.", icon: "☀️", leftover: true },
+                        { time: "Lunch", name: "Curd Rice & Duck Egg Omelette", note: "Made with leftover rice.", icon: "🍚" },
+                        { time: "Dinner", name: "Palak Paneer", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ]
+                },
+                5: {
+                    title: "Day 5: Classic South Indian",
+                    meals: [
+                        { time: "Breakfast", name: "Palak Paneer", note: "Reheated leftovers.", icon: "☀️", leftover: true },
+                        { time: "Lunch", name: "Sambar & Beans Poriyal", note: "With leftover steamed rice.", icon: "🍚" },
+                        { time: "Dinner", name: "Tomato Rasam & Potato Fry", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ]
+                },
+                6: {
+                    title: "Day 6: Tamarind Rice & Mixed Veg",
+                    meals: [
+                        { time: "Breakfast", name: "Potato Fry", note: "Reheated leftovers.", icon: "☀️", leftover: true },
+                        { time: "Lunch", name: "Tamarind Rice & Boiled Duck Egg", note: "Made with leftover rice.", icon: "🍚" },
+                        { time: "Dinner", name: "Mixed Vegetable Curry", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ]
+                },
+                7: {
+                    title: "Day 7: Simple & Wholesome",
+                    meals: [
+                        { time: "Breakfast", name: "Mixed Vegetable Curry", note: "Reheated leftovers.", icon: "☀️", leftover: true },
+                        { time: "Lunch", name: "Dal & Salad", note: "With leftover steamed rice.", icon: "🍚" },
+                        { time: "Dinner", name: "Vegetable Khichdi", note: "A simple one-pot meal.", icon: "🍲" }
+                    ]
+                }
+            };
+
+            const daySelector = document.getElementById('day-selector');
+            const dayTitle = document.getElementById('day-title');
+            const mealCardsContainer = document.getElementById('meal-cards');
+
+            function updateMealDisplay(day) {
+                const dayData = mealPlanData[day];
+                dayTitle.textContent = dayData.title;
+
+                mealCardsContainer.innerHTML = '';
+                dayData.meals.forEach(meal => {
+                    const card = `
+                        <div class="flex flex-col bg-amber-100/60 rounded-xl p-5 shadow-sm transform hover:scale-105 transition-transform duration-300">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-xl font-semibold text-teal-800">${meal.time}</h3>
+                                <span class="text-3xl">${meal.icon}</span>
+                            </div>
+                            <p class="text-lg text-stone-700 font-medium">${meal.name}</p>
+                            <p class="text-sm text-stone-500 mt-2 flex-grow">${meal.note}</p>
+                            ${meal.leftover ? '<div class="mt-3 text-xs font-semibold text-orange-600 self-start bg-orange-100 px-2 py-1 rounded-full">🔁 PREP AHEAD</div>' : ''}
+                        </div>
+                    `;
+                    mealCardsContainer.innerHTML += card;
+                });
+
+                document.querySelectorAll('.day-btn').forEach(button => {
+                    button.classList.remove('active');
+                    if (button.dataset.day == day) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+
+            for (let i = 1; i <= 7; i++) {
+                const button = document.createElement('button');
+                button.textContent = `Day ${i}`;
+                button.dataset.day = i;
+                button.className = 'day-btn px-4 py-2 sm:px-6 sm:py-2.5 text-sm sm:text-base font-semibold text-teal-700 bg-white rounded-lg shadow-sm hover:bg-teal-50';
+                daySelector.appendChild(button);
+            }
+
+            daySelector.addEventListener('click', (e) => {
+                if (e.target.matches('button.day-btn')) {
+                    const day = e.target.dataset.day;
+                    updateMealDisplay(day);
+                }
+            });
+
+            function initChart() {
+                const ctx = document.getElementById('nutrition-chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Lentils & Legumes', 'Vegetables', 'Grains (Rice/Roti)', 'Dairy & Paneer', 'Duck Eggs'],
+                        datasets: [{
+                            label: 'Food Group Distribution',
+                            data: [30, 25, 20, 15, 10],
+                            backgroundColor: [
+                                'rgba(204, 102, 11, 0.7)',
+                                'rgba(13, 148, 136, 0.7)',
+                                'rgba(217, 119, 6, 0.7)',
+                                'rgba(5, 150, 105, 0.7)',
+                                'rgba(249, 115, 22, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgb(204, 102, 11)',
+                                'rgb(13, 148, 136)',
+                                'rgb(217, 119, 6)',
+                                'rgb(5, 150, 105)',
+                                'rgb(249, 115, 22)'
+                            ],
+                            borderWidth: 1.5,
+                            hoverOffset: 12
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: {
+                                        size: 14,
+                                        family: "'Inter', sans-serif"
+                                    },
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                titleFont: { size: 16 },
+                                bodyFont: { size: 14 },
+                                padding: 10,
+                                cornerRadius: 4,
+                                displayColors: true
+                            }
+                        },
+                        cutout: '50%'
+                    }
+                });
+            }
+
+            updateMealDisplay(1);
+            initChart();
+        });
+    </script>
+</body>
+</html>
