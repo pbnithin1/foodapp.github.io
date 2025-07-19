@@ -50,8 +50,8 @@
             <p class="text-stone-600 mt-2">A personalized, easy-cook diet for one, focusing on South Indian flavors.</p>
         </header>
 
-        <section id="guidelines" class="mb-8 p-6 bg-white rounded-xl shadow-sm">
-            <h2 class="text-2xl font-semibold text-teal-700 mb-4">General Guidelines</h2>
+        <section id="general-advice" class="mb-8 p-6 bg-white rounded-xl shadow-sm">
+            <h2 class="text-2xl font-semibold text-teal-700 mb-4">General Dietary Advice</h2>
             <p class="text-stone-600 mb-6">This section outlines the basic principles to follow throughout the week for a balanced diet. Adhering to these simple habits will help you get the most out of this meal plan.</p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-stone-700">
                 <div class="flex items-center space-x-3 p-3 bg-amber-100/50 rounded-lg">
@@ -90,11 +90,25 @@
                 <div id="meal-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 </div>
             </section>
+
+            <section id="daily-ingredients" class="mt-8 p-6 bg-white rounded-xl shadow-sm">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">Ingredients for the Day</h2>
+                <p class="text-stone-600 mb-4">Here's a concise list of key ingredients you'll need for the selected day's meals. Remember to also have common pantry staples like rice, flour, oil, salt, and basic spices.</p>
+                <ul id="ingredients-list" class="list-disc list-inside text-stone-700 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                </ul>
+            </section>
+
+            <section id="daily-nutrients" class="mt-8 p-6 bg-white rounded-xl shadow-sm">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">Nutrient Highlights for the Day</h2>
+                <p class="text-stone-600 mb-4">This section highlights the primary nutrients you'll receive from today's meals and the main food sources contributing to them.</p>
+                <ul id="nutrients-list" class="list-disc list-inside text-stone-700 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                </ul>
+            </section>
         </main>
 
         <section id="nutrition" class="mt-10 pt-8 pb-4 bg-white rounded-xl shadow-sm">
-            <h2 class="text-2xl font-semibold text-teal-700 mb-2 text-center">Nutritional Snapshot</h2>
-             <p class="text-stone-600 text-center max-w-2xl mx-auto mb-6">This chart provides a visual representation of the main food groups in your weekly plan, helping you understand the sources of your nutrition. Hover over any segment of the chart to see the specific food group it represents.</p>
+            <h2 class="text-2xl font-semibold text-teal-700 mb-2 text-center">Food Group Contributions</h2>
+             <p class="text-stone-600 text-center max-w-2xl mx-auto mb-6">This chart provides a visual representation of the main food groups contributing to your weekly plan. Hover over any segment to see its primary nutrient contribution.</p>
             <div class="chart-container">
                 <canvas id="nutrition-chart"></canvas>
             </div>
@@ -111,6 +125,13 @@
                         { time: "Breakfast", name: "Vegetable Upma", note: "Reheated from last night.", icon: "☀️" },
                         { time: "Lunch", name: "Sambar & Carrot Poriyal", note: "With leftover steamed rice.", icon: "🍚" },
                         { time: "Dinner", name: "Dal Tadka & Bhindi Fry", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ],
+                    ingredients: ["Semolina (Rava)", "Carrots", "Onions", "Peas", "Toor Dal", "Drumsticks", "Green Beans", "Tamarind", "Okra", "Masoor Dal", "Ginger", "Garlic"],
+                    nutrientHighlights: [
+                        "Proteins: Lentils (Toor Dal, Masoor Dal), Sambar",
+                        "Carbohydrates: Rice, Semolina (Upma), Roti/Chapati",
+                        "Vitamins & Minerals: Carrots, Okra, Drumsticks, Green Beans",
+                        "Fats: Cooking oil"
                     ]
                 },
                 2: {
@@ -119,6 +140,13 @@
                         { time: "Breakfast", name: "Dal Tadka & Bhindi Fry", note: "Reheated leftovers.", icon: "☀️", leftover: true },
                         { time: "Lunch", name: "Lemon Rice & Boiled Duck Egg", note: "Made with leftover rice.", icon: "🍚" },
                         { time: "Dinner", name: "Chana Masala", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ],
+                    ingredients: ["Lemon", "Duck Eggs", "Chickpeas (Chana)", "Tomatoes", "Green Chillies"],
+                    nutrientHighlights: [
+                        "Proteins: Duck Egg, Chickpeas (Chana Masala), Dal Tadka",
+                        "Carbohydrates: Rice, Roti/Chapati, Chickpeas",
+                        "Vitamins & Minerals: Lemons, Tomatoes, Okra, Green Chillies",
+                        "Fats: Cooking oil"
                     ]
                 },
                 3: {
@@ -127,6 +155,13 @@
                         { time: "Breakfast", name: "Chana Masala", note: "Reheated leftovers.", icon: "☀️", leftover: true },
                         { time: "Lunch", name: "Rasam & Cabbage Poriyal", note: "With leftover steamed rice.", icon: "🍚" },
                         { time: "Dinner", name: "Vegetable Kootu", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ],
+                    ingredients: ["Cabbage", "Mixed Vegetables (e.g., Potato, Carrot, Beans, Peas)", "Moong Dal"],
+                    nutrientHighlights: [
+                        "Proteins: Moong Dal (from Kootu), Chana Masala",
+                        "Carbohydrates: Rice, Roti/Chapati, Cabbage, Mixed Vegetables",
+                        "Vitamins & Minerals: Cabbage, Mixed Vegetables",
+                        "Fats: Cooking oil"
                     ]
                 },
                 4: {
@@ -135,6 +170,14 @@
                         { time: "Breakfast", name: "Vegetable Kootu", note: "Reheated leftovers.", icon: "☀️", leftover: true },
                         { time: "Lunch", name: "Curd Rice & Duck Egg Omelette", note: "Made with leftover rice.", icon: "🍚" },
                         { time: "Dinner", name: "Palak Paneer", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ],
+                    ingredients: ["Paneer (Cottage Cheese)", "Spinach (Palak)", "Duck Eggs"],
+                    nutrientHighlights: [
+                        "Proteins: Paneer, Duck Eggs, Moong Dal (from Kootu)",
+                        "Carbohydrates: Rice, Roti/Chapati, Spinach",
+                        "Calcium: Paneer, Milk (implied daily intake)",
+                        "Vitamins & Minerals: Spinach, Mixed Vegetables",
+                        "Fats: Cooking oil"
                     ]
                 },
                 5: {
@@ -143,6 +186,13 @@
                         { time: "Breakfast", name: "Palak Paneer", note: "Reheated leftovers.", icon: "☀️", leftover: true },
                         { time: "Lunch", name: "Sambar & Beans Poriyal", note: "With leftover steamed rice.", icon: "🍚" },
                         { time: "Dinner", name: "Tomato Rasam & Potato Fry", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ],
+                    ingredients: ["Green Beans", "Potatoes"],
+                    nutrientHighlights: [
+                        "Proteins: Sambar, Palak Paneer",
+                        "Carbohydrates: Rice, Roti/Chapati, Potatoes, Green Beans",
+                        "Vitamins & Minerals: Green Beans, Potatoes, Tomatoes",
+                        "Fats: Cooking oil"
                     ]
                 },
                 6: {
@@ -151,6 +201,13 @@
                         { time: "Breakfast", name: "Potato Fry", note: "Reheated leftovers.", icon: "☀️", leftover: true },
                         { time: "Lunch", name: "Tamarind Rice & Boiled Duck Egg", note: "Made with leftover rice.", icon: "🍚" },
                         { time: "Dinner", name: "Mixed Vegetable Curry", note: "Cook extra for tomorrow's breakfast.", icon: "🍲", leftover: true }
+                    ],
+                    ingredients: ["Tamarind", "Mixed Vegetables (e.g., Cauliflower, Capsicum, Carrot, Peas)", "Duck Eggs"],
+                    nutrientHighlights: [
+                        "Proteins: Duck Egg, Mixed Vegetable Curry",
+                        "Carbohydrates: Rice, Roti/Chapati, Tamarind, Mixed Vegetables, Potatoes",
+                        "Vitamins & Minerals: Mixed Vegetables, Tamarind",
+                        "Fats: Cooking oil"
                     ]
                 },
                 7: {
@@ -159,13 +216,30 @@
                         { time: "Breakfast", name: "Mixed Vegetable Curry", note: "Reheated leftovers.", icon: "☀️", leftover: true },
                         { time: "Lunch", name: "Dal & Salad", note: "With leftover steamed rice.", icon: "🍚" },
                         { time: "Dinner", name: "Vegetable Khichdi", note: "A simple one-pot meal.", icon: "🍲" }
+                    ],
+                    ingredients: ["Moong Dal", "Assorted Vegetables (e.g., Carrot, Peas, Potato, Onion, Tomato)"],
+                    nutrientHighlights: [
+                        "Proteins: Moong Dal (from Khichdi, Dal), Mixed Vegetable Curry",
+                        "Carbohydrates: Rice, Roti/Chapati, Assorted Vegetables",
+                        "Vitamins & Minerals: Assorted Vegetables",
+                        "Fats: Cooking oil"
                     ]
                 }
+            };
+
+            const foodGroupNutrientInfo = {
+                'Lentils & Legumes': 'Rich in Protein & Fiber',
+                'Vegetables': 'Packed with Vitamins, Minerals & Fiber',
+                'Grains (Rice/Roti)': 'Primary source of Carbohydrates',
+                'Dairy & Paneer': 'Excellent source of Calcium & Protein',
+                'Duck Eggs': 'High in Protein & essential Vitamins'
             };
 
             const daySelector = document.getElementById('day-selector');
             const dayTitle = document.getElementById('day-title');
             const mealCardsContainer = document.getElementById('meal-cards');
+            const ingredientsList = document.getElementById('ingredients-list');
+            const nutrientsList = document.getElementById('nutrients-list');
 
             function updateMealDisplay(day) {
                 const dayData = mealPlanData[day];
@@ -185,6 +259,18 @@
                         </div>
                     `;
                     mealCardsContainer.innerHTML += card;
+                });
+
+                ingredientsList.innerHTML = '';
+                dayData.ingredients.forEach(ingredient => {
+                    const listItem = `<li class="p-1">${ingredient}</li>`;
+                    ingredientsList.innerHTML += listItem;
+                });
+
+                nutrientsList.innerHTML = '';
+                dayData.nutrientHighlights.forEach(nutrient => {
+                    const listItem = `<li class="p-1">${nutrient}</li>`;
+                    nutrientsList.innerHTML += listItem;
                 });
 
                 document.querySelectorAll('.day-btn').forEach(button => {
@@ -218,7 +304,7 @@
                         labels: ['Lentils & Legumes', 'Vegetables', 'Grains (Rice/Roti)', 'Dairy & Paneer', 'Duck Eggs'],
                         datasets: [{
                             label: 'Food Group Distribution',
-                            data: [30, 25, 20, 15, 10],
+                            data: [30, 35, 20, 10, 5],
                             backgroundColor: [
                                 'rgba(204, 102, 11, 0.7)',
                                 'rgba(13, 148, 136, 0.7)',
@@ -256,7 +342,13 @@
                                 bodyFont: { size: 14 },
                                 padding: 10,
                                 cornerRadius: 4,
-                                displayColors: true
+                                displayColors: true,
+                                callbacks: {
+                                    afterLabel: function(context) {
+                                        const label = context.label || '';
+                                        return foodGroupNutrientInfo[label] || '';
+                                    }
+                                }
                             }
                         },
                         cutout: '50%'
